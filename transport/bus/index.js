@@ -12,20 +12,22 @@ exports.subscribe = (topic) => {
   })
 }
 
-exports.storeEvent() => {
+exports.storeEvent = () => {
 	mqttclient.on('message',(topic, msg) => {
 		storeEvent.add(topic, msg)
 	})
 }
 
-function mqtt() {
-	let credential = require('config').mqtt.credential
+var mqtt = function (uri) {
+	let credential = !uri ? require('../../config').mqtt.credential : uri
 	let mqtt = require('mqtt')
 
- 	mqttclient = mqtt.connect(credential)
+	mqttclient =	mqtt.connect(credential)
+
  	mqttclient.on('connect', function() {
  		console.log('Mqtt connected')
  	})
+ 	return mqttclient
 }
 
-exports.start = mqtt()
+exports.start = mqtt
