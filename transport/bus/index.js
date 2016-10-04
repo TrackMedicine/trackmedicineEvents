@@ -1,4 +1,6 @@
 let mqttclient
+let storage = require('../buffer')
+let queue = 'temperature'
 
 exports.publish = (topic, message) => {
 	mqttclient.on('connect', () => {
@@ -6,15 +8,16 @@ exports.publish = (topic, message) => {
   })
 }
 
-exports.subscribe = (topic) => {
+var subscribe = function (topic= queue) {
 	mqttclient.on('connect', () => {
  		mqttclient.subscribe(topic)
   })
 }
 
-exports.storeEvent = () => {
+var storeEvent = function() {
 	mqttclient.on('message',(topic, msg) => {
-		storeEvent.add(topic, msg)
+		console.log('--msg: ', msg.toString())
+		storage.save(topic, msg)
 	})
 }
 
@@ -23,11 +26,13 @@ var mqtt = function (uri) {
 	let mqtt = require('mqtt')
 
 	mqttclient =	mqtt.connect(credential)
-
  	mqttclient.on('connect', function() {
  		console.log('Mqtt connected')
  	})
- 	return mqttclient
 }
 
-exports.start = mqtt
+exports.start = () => {
+	mqtt()
+	subscribe()
+	storeEvent()
+}
