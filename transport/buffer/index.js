@@ -1,6 +1,5 @@
 let firebaseClient = require("firebase");
 let config = require('../../config/').firebase
-let event
 
 function firebase() {
 	firebaseClient.initializeApp({
@@ -9,14 +8,12 @@ function firebase() {
 	});
 }
 
-function save(topic, message){
-firebaseClient.database().ref('events').push({
-    name: topic,
-    data: message.toString()
-  })
+function save(data){
+	firebaseClient.database().ref('events').push(data)
 }
 
 exports.event = firebase
-exports.save = function(topic,message) { 
-	save(topic, message) 
+exports.firebaseCli = firebaseClient
+exports.store = function(data) { 
+	save(data) 
 }

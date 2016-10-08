@@ -1,5 +1,5 @@
 let mqttclient
-let storage = require('../buffer')
+let command = require('../command.handler') 
 let queue = 'events'
 
 exports.publish = (topic, message) => {
@@ -15,8 +15,8 @@ var subscribe = function (topic= queue) {
 }
 
 var storeEvent = function() {
-	mqttclient.on('message',(topic, msg) => {
-		storage.save(topic, msg)
+	mqttclient.on('message',(topic, data) => {
+		command.handler(topic,data)
 	})
 }
 
